@@ -37,11 +37,11 @@ def poll_sqs_queue():
                 'Accept': 'application/vnd.github+json'
             }
             api_url = f'https://api.github.com/repos/{repo}/actions/workflows/sqs_trigger.yml/dispatches'
-            github_response = requests.post(api_url, headers=headers, json={'ref': ref})
+            #github_response = requests.post(api_url, headers=headers, json={'ref': ref})
             print(f"Triggered workflow in repo {repo} with response {github_response.status_code}")
 
             # Delete the processed message from the SQS queue
-            receipt_handle = message['ReceiptHandle']
+            #receipt_handle = message['ReceiptHandle']
             sqs.delete_message(QueueUrl=sqs_queue_url, ReceiptHandle=receipt_handle)
 
         if __name__ == '__main__':
