@@ -72,3 +72,5 @@ Refs: #123
 uae squash merges and change commit message accordingly !
 - https://www.conventionalcommits.org/en/v1.0.0/#how-does-conventional-commits-handle-revert-commits
 how to use this when doing reverts
+
+- https://levelup.gitconnected.com/using-semantic-release-with-github-actions-c30d197829f1
