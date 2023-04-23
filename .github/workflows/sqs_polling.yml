@@ -25,7 +25,7 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: eu-central-1
-        SQS_QUEUE_URL: your_sqs_queue_url
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
       run: |
         python .github/scripts/poll_sqs.py
