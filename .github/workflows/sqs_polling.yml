@@ -27,5 +27,6 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ vars.AWS_REGION }}
         SQS_QUEUE_URL: ${{ secrets.SQS_QUEUE_URL }}
+        GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
       run: |
         python .github/scripts/poll_sqs.py
