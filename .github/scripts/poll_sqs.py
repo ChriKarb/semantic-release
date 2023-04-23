@@ -15,7 +15,7 @@ sqs_queue_url = os.environ['SQS_QUEUE_URL']
 github_token = os.environ['GITHUB_TOKEN']
 
 # Create an SQS client
-sqs = boto3.client('sqs', region_name=aws_region, aws_accesss_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+sqs = boto3.client('sqs', region_name=aws_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 def poll_sqs_queue():
     # Poll messages from the SQS queue
     response = sqs.receive_message(
