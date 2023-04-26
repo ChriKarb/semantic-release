@@ -90,4 +90,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'cleanupreport')
     steps:
-      - name:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cleanup and report step
+        run: bash bin/cleanupreport.sh
