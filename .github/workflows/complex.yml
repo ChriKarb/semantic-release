@@ -1,0 +1,89 @@
+name: Complex Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'Target steps (comma-separated): setup, smoketest, preconfig, parallel1, parallel2, postconfig, smoketest2, cleanupreport'
+        required: true
+        default: 'all'
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'setup')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup step
+        run: bash bin/setup.sh
+
+  smoketest:
+    needs: setup
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'smoketest')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Smoke test step
+        run: bash bin/smoketest.sh
+
+  preconfig:
+    needs: smoketest
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'preconfig')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pre-configuration step
+        run: bash bin/preconfig.sh
+
+  parallel_steps:
+    needs: preconfig
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        parallel_step: ['parallel1', 'parallel2']
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, matrix.parallel_step)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run parallel step
+        run: bash bin/${{ matrix.parallel_step }}.sh
+
+  postconfig:
+    needs: parallel_steps
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'postconfig')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Post-configuration step
+        run: bash bin/postconfig.sh
+
+  smoketest2:
+    needs: postconfig
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'smoketest2')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Smoke test step 2
+        run: bash bin/smoketest2.sh
+
+  cleanupreport:
+    needs: [setup, smoketest, preconfig, parallel_steps, postconfig, smoketest2]
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'cleanupreport')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cleanup and report step
+        run: bash bin/cleanupreport.sh
