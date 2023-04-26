@@ -41,22 +41,30 @@ jobs:
       - name: Pre-configuration step
         run: bash bin/preconfig.sh
 
-  parallel_steps:
+  parallel1:
     needs: preconfig
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        parallel_step: ['parallel1', 'parallel2']
-    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, matrix.parallel_step)
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'parallel1')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Run parallel step
-        run: bash bin/${{ matrix.parallel_step }}.sh
+      - name: Run parallel step 1
+        run: bash bin/parallel1.sh
+
+  parallel2:
+    needs: preconfig
+    runs-on: ubuntu-latest
+    if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'parallel2')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run parallel step 2
+        run: bash bin/parallel2.sh
 
   postconfig:
-    needs: parallel_steps
+    needs: [parallel1, parallel2]
     runs-on: ubuntu-latest
     if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'postconfig')
     steps:
@@ -78,12 +86,8 @@ jobs:
         run: bash bin/smoketest2.sh
 
   cleanupreport:
-    needs: [setup, smoketest, preconfig, parallel_steps, postconfig, smoketest2]
+    needs: [setup, smoketest, preconfig, parallel1, parallel2, postconfig, smoketest2]
     runs-on: ubuntu-latest
     if: contains(github.event.inputs.targets, 'all') || contains(github.event.inputs.targets, 'cleanupreport')
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Cleanup and report step
-        run: bash bin/cleanupreport.sh
+      - name:
