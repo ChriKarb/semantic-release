@@ -15,7 +15,7 @@ sqs_queue_url = os.environ['SQS_QUEUE_URL']
 github_token = os.environ['GITHUB_TOKEN']
 
 # Create an SQS client
-sqs = boto3.client('sqs', region_name=aws_region, aws_accesss_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+sqs = boto3.client('sqs', region_name=aws_region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 def poll_sqs_queue():
     # Poll messages from the SQS queue
     response = sqs.receive_message(
@@ -37,11 +37,11 @@ def poll_sqs_queue():
                 'Accept': 'application/vnd.github+json'
             }
             api_url = f'https://api.github.com/repos/{repo}/actions/workflows/sqs_trigger.yml/dispatches'
-            github_response = requests.post(api_url, headers=headers, json={'ref': ref})
+            #github_response = requests.post(api_url, headers=headers, json={'ref': ref})
             print(f"Triggered workflow in repo {repo} with response {github_response.status_code}")
 
             # Delete the processed message from the SQS queue
-            receipt_handle = message['ReceiptHandle']
+            #receipt_handle = message['ReceiptHandle']
             sqs.delete_message(QueueUrl=sqs_queue_url, ReceiptHandle=receipt_handle)
 
         if __name__ == '__main__':
